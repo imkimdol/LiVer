@@ -1,17 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 
-namespace LiVer
+namespace LiVer;
+
+public class Collection
 {
-    public class Collection
+    public string name { get; private set; }
+    private List<Version> versions { get; } = new List<Version>();
+    public ReadOnlyCollection<Version> versionsReadOnly => versions.AsReadOnly();
+
+    // New project
+    public Collection(string liverDirPath, string name, string originalFilePath)
     {
-        private List<Version> versions;
-        public Collection()
-        {
-            versions = new List<Version>();
-        }
+
+    }
+    // New collection from version
+    public Collection(string liverDirPath, string name, Version sourceVersion)
+    {
+
+    }
+    // Load collection
+    public Collection(string collectionDirPath)
+    {
+
+    }
+
+    public Version NewVersion(string versionName)
+    {
+        return null; //stub
     }
 }
