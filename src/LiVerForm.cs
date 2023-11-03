@@ -1,8 +1,8 @@
 namespace LiVer
 {
-    public partial class Form : System.Windows.Forms.Form
+    public partial class LiVerForm : Form
     {
-        public Form()
+        public LiVerForm()
         {
             InitializeComponent();
         }

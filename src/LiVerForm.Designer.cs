@@ -1,6 +1,6 @@
 ﻿namespace LiVer
 {
-    partial class Form
+    partial class LiVerForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LiVerForm));
             SuspendLayout();
             // 
             // Form
