@@ -1,61 +1,132 @@
-﻿namespace LiVer;
+﻿using System.Collections.ObjectModel;
+using System.Text.Json;
+
+namespace LiVer;
 
 public class Version
 {
     public int id { get; set; }
-    public string collectionPath { get; private set; }
+    public string collectionDirPath { get; private set; }
     public bool renderExists { get; private set; } = false;
     public Version? prev { get; private set; }
-    public Version? next { get; set; }
+    public List<Version> next { get; set; } = new List<Version>();
+    public ReadOnlyCollection<Version> nextReadOnly => next.AsReadOnly();
     public string changeLog { get; set; } = string.Empty;
     public string commentsForNext { get; set; } = string.Empty;
 
+    
+    // ** CONSTRUCTORS **
     // New first version
-    Version(string collectionPath)
+    public Version(string collectionPath, string sourceFilePath)
     {
         this.id = 0;
-        this.collectionPath = collectionPath;
+        this.collectionDirPath = collectionPath;
         this.prev = null;
-        this.next = null;
+
+        FileHelper.CopyFile(sourceFilePath, GetFilePath());
     }
     // New version
-    Version(string collectionPath, int id, Version prev)
+    public Version(int id, string collectionPath, Version prev)
     {
         this.id = id;
-        this.collectionPath = collectionPath;
+        this.collectionDirPath = collectionPath;
         this.prev = prev;
-        this.next = null;
+
+        FileHelper.CopyFile(prev.GetFilePath(), GetFilePath());
     }
-    // Load version from file
-    Version(string collectionPath, int id, Version prev, Version next, string changeLog, string commentsForNext)
+    //  From VersionData
+    private Version(SerializableVersion versionData, Version? prev, List<Version> next)
     {
-        this.id = id;
-        this.collectionPath = collectionPath;
+        this.id = versionData.id;
+        this.collectionDirPath = versionData.collectionPath;
         this.prev = prev;
         this.next = next;
-        this.changeLog = changeLog;
-        this.commentsForNext = commentsForNext;
+        this.changeLog = versionData.changeLog;
+        this.commentsForNext = versionData.commentsForNext;
 
         if (!CheckFile()) throw new Exception("Version file does not exist");
         CheckRender();
     }
 
-    public bool CheckFile()
+
+    // ** FILE & RENDER **
+    public string GetFilePath()
     {
-        return false; //stub
+        return Path.Join(collectionDirPath, id.ToString(), FileHelper.abletonLiveSetExtension);
+    }
+    private bool CheckFile()
+    {
+        return FileHelper.CheckFileExists(GetFilePath());
     }
     public void OpenFile()
     {
-
+        FileHelper.OpenFile(GetFilePath());
     }
-    public void PlayRender()
+    public void DeleteFile()
     {
-
+        FileHelper.DeleteFile(GetFilePath());
+    }
+    public string GetRenderPath()
+    {
+        return Path.Join(collectionDirPath, id.ToString(), FileHelper.waveFileExtension);
     }
     public bool CheckRender()
     {
-        return false; //stub
+        return FileHelper.CheckFileExists(GetRenderPath());
+    }
+    public void PlayRender()
+    {
+        FileHelper.OpenFile(GetRenderPath());
     }
 
 
+    // ** DATA **
+    public string Serialize()
+    {
+        SerializableVersion data = ConvertToSerializable();
+        return JsonSerializer.Serialize(data, FileHelper.GetSerializerOptions());
+    }
+    public static Version Deserialize(string data, Collection collection)
+    {
+        SerializableVersion? deserialized = JsonSerializer.Deserialize<SerializableVersion>(data);
+        if (deserialized == null) { throw new Exception("Invalid Version data"); }
+
+        int? prevId = deserialized!.prevId;
+        Version? prev = (prevId != null) ? collection.FindVersion((int) prevId) : null;
+
+        List<Version> versions = new List<Version>();
+        foreach (int id in deserialized.nextIds)
+        {
+            Version? version = collection.FindVersion(id);
+            if (version != null) versions.Add(version);
+        }
+
+        return new Version(deserialized, prev, versions);
+    }
+    private SerializableVersion ConvertToSerializable()
+    {
+        int? prevId = (prev != null) ? prev.id : null;
+        int[] nextIds = next.ConvertAll(n => n.id).ToArray();
+        return new SerializableVersion(id, collectionDirPath, prevId, nextIds, changeLog, commentsForNext);
+    } 
+}
+
+public class SerializableVersion
+{
+    public int id;
+    public string collectionPath;
+    public int? prevId;
+    public int[] nextIds;
+    public string changeLog;
+    public string commentsForNext;
+
+    public SerializableVersion(int id, string collectionPath, int? prevId, int[] nextIds, string changeLog, string commentsForNext)
+    {
+        this.id = id;
+        this.collectionPath = collectionPath;
+        this.prevId = prevId;
+        this.nextIds = nextIds;
+        this.changeLog = changeLog;
+        this.commentsForNext = commentsForNext;
+    }
 }

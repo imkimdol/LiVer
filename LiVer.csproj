@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="src\Backend\" />
+    <Compile Remove="src\Backend\**" />
+    <EmbeddedResource Remove="src\Backend\**" />
+    <None Remove="src\Backend\**" />
   </ItemGroup>
 
 </Project>
