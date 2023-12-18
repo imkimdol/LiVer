@@ -18,7 +18,7 @@ public static class FileHelper
         }
         catch (Exception e)
         {
-            ShowErrorMessage(e.Message);
+            // TODO display error message
         }
     }
     public static void DeleteDirectory(string path)
@@ -29,7 +29,7 @@ public static class FileHelper
         }
         catch (Exception e)
         {
-            ShowErrorMessage(e.Message);
+            // TODO display error message
         }
     }
     public static string ReadFile(string path)
@@ -40,7 +40,7 @@ public static class FileHelper
         }
         catch (Exception e)
         {
-            ShowErrorMessage(e.Message);
+            // TODO display error message
             return string.Empty;
         }
     }
@@ -52,7 +52,7 @@ public static class FileHelper
         }
         catch (Exception e)
         {
-            ShowErrorMessage(e.Message);
+            // TODO display error message
         }
     }
     public static void DeleteFile (string path)
@@ -63,7 +63,7 @@ public static class FileHelper
         }
         catch (Exception e)
         {
-            ShowErrorMessage(e.Message);
+            // TODO display error message
         }
     }
     public static void CopyFile(string source, string destination)
@@ -74,7 +74,7 @@ public static class FileHelper
         }
         catch (Exception e)
         {
-            ShowErrorMessage(e.Message);
+            // TODO display error message
         }
     }
     public static void OpenFile(string path)
@@ -85,9 +85,9 @@ public static class FileHelper
         }
         catch (Exception e)
         {
-            ShowErrorMessage(e.Message);
+            // TODO display error message
         }
-        
+
     }
     public static bool CheckFileExists(string path)
     {
@@ -96,10 +96,5 @@ public static class FileHelper
     public static JsonSerializerOptions GetSerializerOptions()
     {
         return new JsonSerializerOptions { WriteIndented = true };
-    }
-
-    private static void ShowErrorMessage(string message)
-    {
-        MessageBox.Show(message);
     }
 }
