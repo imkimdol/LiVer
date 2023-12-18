@@ -1,5 +1,5 @@
 ﻿namespace LiVer;
-internal class Main
+internal class LiVer
 {
     static void Main(string[] args)
     {

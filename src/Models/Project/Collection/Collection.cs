@@ -5,37 +5,37 @@ namespace LiVer;
 
 public class Collection
 {
-    public string name { get; private set; }
-    public string projectDirPath { get; private set; }
-    private int maxIndex { get; set; }
-    private List<Version> versions { get; } = new List<Version>();
-    public ReadOnlyCollection<Version> versionsReadOnly => versions.AsReadOnly();
+    public string Name { get; private set; }
+    public string ProjectDirPath { get; private set; }
+    private int MaxIndex { get; set; }
+    private List<Version> _versions { get; } = new List<Version>();
+    public ReadOnlyCollection<Version> VersionsReadOnly => _versions.AsReadOnly();
 
     // ** CONSTRUCTORS **
     // New collection
     public Collection(string name, string projectPath, string sourceFilePath)
     {
-        this.name = name;
-        this.projectDirPath = projectPath;
-        this.maxIndex = 0;
+        this.Name = name;
+        this.ProjectDirPath = projectPath;
+        this.MaxIndex = 0;
 
         FileHelper.CreateDirectory(GetDirectoryPath());
 
         Version version = new Version(GetDirectoryPath(), sourceFilePath);
-        versions.Add(version);
+        _versions.Add(version);
     }
     // From CollectionData
     private Collection(SerializableCollection collectionData)
     {
-        name = collectionData.name;
-        projectDirPath = collectionData.projectPath;
-        maxIndex = collectionData.maxIndex;
+        Name = collectionData.name;
+        ProjectDirPath = collectionData.projectPath;
+        MaxIndex = collectionData.maxIndex;
 
         foreach (string sv in collectionData.serializedVersions)
         {
             try
             {
-                versions.Add(Version.Deserialize(sv, this));
+                _versions.Add(Version.Deserialize(sv, this));
             }
             catch { }
         }
@@ -45,20 +45,20 @@ public class Collection
     // ** VERSION **
     public Version NewVersion(Version source)
     {
-        Version version = new Version(maxIndex + 1, GetDirectoryPath(), source);
-        versions.Add(version);
-        maxIndex++;
+        Version version = new Version(MaxIndex + 1, GetDirectoryPath(), source);
+        _versions.Add(version);
+        MaxIndex++;
 
         return version;
     }
     public void DeleteVersion(Version version)
     {
         version.DeleteFile();
-        versions.Remove(version);
+        _versions.Remove(version);
     }
     public Version? FindVersion(int id)
     {
-        return versions.Find(v => v.id == id);
+        return _versions.Find(v => v.Id == id);
         /*foreach (Version v in versions)
         {
             if (v.id == id) return v;
@@ -70,11 +70,11 @@ public class Collection
     // ** FILE **
     private string GetDirectoryPath()
     {
-        return Path.Combine(projectDirPath, name);
+        return Path.Combine(ProjectDirPath, Name);
     }
     public void DeleteDirectory()
     {
-        FileHelper.DeleteDirectory(projectDirPath);
+        FileHelper.DeleteDirectory(ProjectDirPath);
     }
 
 
@@ -93,11 +93,11 @@ public class Collection
     private SerializableCollection ConvertToSerializable()
     {
         List<string> serializedVersions = new List<string>();
-        foreach (Version v in versions)
+        foreach (Version v in _versions)
         {
             serializedVersions.Add(v.Serialize());
         }
-        return new SerializableCollection(name, projectDirPath, maxIndex, serializedVersions.ToArray());
+        return new SerializableCollection(Name, ProjectDirPath, MaxIndex, serializedVersions.ToArray());
     }
 }
 

@@ -5,44 +5,44 @@ namespace LiVer;
 
 public class Version
 {
-    public int id { get; set; }
-    public string collectionDirPath { get; private set; }
-    public bool renderExists { get; private set; } = false;
-    public Version? prev { get; private set; }
-    public List<Version> next { get; set; } = new List<Version>();
-    public ReadOnlyCollection<Version> nextReadOnly => next.AsReadOnly();
-    public string changeLog { get; set; } = string.Empty;
-    public string commentsForNext { get; set; } = string.Empty;
+    public int Id { get; set; }
+    public string CollectionDirPath { get; private set; }
+    public bool RenderExists { get; private set; } = false;
+    public Version? Prev { get; private set; }
+    public List<Version> Next { get; set; } = new List<Version>();
+    public ReadOnlyCollection<Version> NextReadOnly => Next.AsReadOnly();
+    public string ChangeLog { get; set; } = string.Empty;
+    public string CommendsForNext { get; set; } = string.Empty;
 
     
     // ** CONSTRUCTORS **
     // New first version
     public Version(string collectionPath, string sourceFilePath)
     {
-        this.id = 0;
-        this.collectionDirPath = collectionPath;
-        this.prev = null;
+        this.Id = 0;
+        this.CollectionDirPath = collectionPath;
+        this.Prev = null;
 
         FileHelper.CopyFile(sourceFilePath, GetFilePath());
     }
     // New version
     public Version(int id, string collectionPath, Version prev)
     {
-        this.id = id;
-        this.collectionDirPath = collectionPath;
-        this.prev = prev;
+        this.Id = id;
+        this.CollectionDirPath = collectionPath;
+        this.Prev = prev;
 
         FileHelper.CopyFile(prev.GetFilePath(), GetFilePath());
     }
     //  From VersionData
     private Version(SerializableVersion versionData, Version? prev, List<Version> next)
     {
-        this.id = versionData.id;
-        this.collectionDirPath = versionData.collectionPath;
-        this.prev = prev;
-        this.next = next;
-        this.changeLog = versionData.changeLog;
-        this.commentsForNext = versionData.commentsForNext;
+        this.Id = versionData.id;
+        this.CollectionDirPath = versionData.collectionPath;
+        this.Prev = prev;
+        this.Next = next;
+        this.ChangeLog = versionData.changeLog;
+        this.CommendsForNext = versionData.commentsForNext;
 
         if (!CheckFile()) throw new Exception("Version file does not exist");
         CheckRender();
@@ -52,7 +52,7 @@ public class Version
     // ** FILE & RENDER **
     public string GetFilePath()
     {
-        return Path.Join(collectionDirPath, id.ToString(), FileHelper.abletonLiveSetExtension);
+        return Path.Join(CollectionDirPath, Id.ToString(), FileHelper.AbletonLiveSetExtension);
     }
     private bool CheckFile()
     {
@@ -68,7 +68,7 @@ public class Version
     }
     public string GetRenderPath()
     {
-        return Path.Join(collectionDirPath, id.ToString(), FileHelper.waveFileExtension);
+        return Path.Join(CollectionDirPath, Id.ToString(), FileHelper.WaveFileExtension);
     }
     public bool CheckRender()
     {
@@ -105,9 +105,9 @@ public class Version
     }
     private SerializableVersion ConvertToSerializable()
     {
-        int? prevId = (prev != null) ? prev.id : null;
-        int[] nextIds = next.ConvertAll(n => n.id).ToArray();
-        return new SerializableVersion(id, collectionDirPath, prevId, nextIds, changeLog, commentsForNext);
+        int? prevId = (Prev != null) ? Prev.Id : null;
+        int[] nextIds = Next.ConvertAll(n => n.Id).ToArray();
+        return new SerializableVersion(Id, CollectionDirPath, prevId, nextIds, ChangeLog, CommendsForNext);
     } 
 }
 

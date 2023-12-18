@@ -5,10 +5,10 @@ namespace LiVer;
 
 public static class FileHelper
 {
-    public const string projectDirectoryName = "LiVer";
-    public const string projectFileExtension = ".lvr";
-    public const string abletonLiveSetExtension = ".als";
-    public const string waveFileExtension = ".wav";
+    public const string ProjectDirectoryName = "LiVer";
+    public const string ProjectFileExtension = ".lvr";
+    public const string AbletonLiveSetExtension = ".als";
+    public const string WaveFileExtension = ".wav";
 
     public static void CreateDirectory(string path)
     {

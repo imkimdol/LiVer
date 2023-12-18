@@ -5,33 +5,33 @@ namespace LiVer;
 
 public class Project
 {
-    public string name { get; set; }
-    public string dirPath { get; private set; }
-    private List<Collection> collections { get; } = new List<Collection>();
-    public ReadOnlyCollection<Collection> collectionReadOnly => collections.AsReadOnly();
+    public string Name { get; set; }
+    public string DirectoryPath { get; private set; }
+    private List<Collection> _collections { get; } = new List<Collection>();
+    public ReadOnlyCollection<Collection> collectionReadOnly => _collections.AsReadOnly();
 
     // ** CONSTRUCTORS **
     // New collection
     public Project(string liveSetPath)
     {
-        if (!Path.GetExtension(liveSetPath).Equals(FileHelper.abletonLiveSetExtension)) throw new Exception();
-        name = Path.GetFileNameWithoutExtension(liveSetPath);
+        if (!Path.GetExtension(liveSetPath).Equals(FileHelper.AbletonLiveSetExtension)) throw new Exception();
+        Name = Path.GetFileNameWithoutExtension(liveSetPath);
 
-        dirPath = Path.Combine(liveSetPath, FileHelper.projectDirectoryName);
-        FileHelper.CreateDirectory(dirPath);
+        DirectoryPath = Path.Combine(liveSetPath, FileHelper.ProjectDirectoryName);
+        FileHelper.CreateDirectory(DirectoryPath);
         
         SaveProjectFile();
     }
     // From ProjectData
     private Project(SerializableProject projectData)
     {
-        name = projectData.name;
-        dirPath = projectData.dirPath;
+        Name = projectData.name;
+        DirectoryPath = projectData.dirPath;
         foreach (string sc in projectData.serializedCollections)
         {
             try
             {
-                collections.Add(Collection.Deserialize(sc));
+                _collections.Add(Collection.Deserialize(sc));
             }
             catch {}
         }
@@ -41,14 +41,14 @@ public class Project
     // ** COLLECTION **
     public Collection NewCollection(string collectionName, Version source)
     {
-        Collection collection = new Collection(collectionName, dirPath, source.GetFilePath());
-        collections.Add(collection);
+        Collection collection = new Collection(collectionName, DirectoryPath, source.GetFilePath());
+        _collections.Add(collection);
         return collection;
     }
     public void DeleteCollection(Collection collection)
     {
         collection.DeleteDirectory();
-        collections.Remove(collection);
+        _collections.Remove(collection);
     }
 
     // ** FILE **
@@ -63,7 +63,7 @@ public class Project
     }
     private string GetProjectFilePath()
     {
-        return Path.Combine(dirPath, name, FileHelper.projectFileExtension);
+        return Path.Combine(DirectoryPath, Name, FileHelper.ProjectFileExtension);
     }
 
 
@@ -82,11 +82,11 @@ public class Project
     private SerializableProject ConvertToSerializable()
     {
         List<string> serializedCollections = new List<string>();
-        foreach (Collection c in collections)
+        foreach (Collection c in _collections)
         {
             serializedCollections.Add(c.Serialize());
         }
-        return new SerializableProject(name, dirPath, serializedCollections.ToArray());
+        return new SerializableProject(Name, DirectoryPath, serializedCollections.ToArray());
     }
 }
 
