@@ -13,13 +13,13 @@ public class Collection
     public ReadOnlyCollection<Version> VersionsReadOnly => _versions.AsReadOnly();
 
     // ** CONSTRUCTORS **
-    
+
     // New collection
     public Collection(string name, string projectPath, string sourceFilePath)
     {
-        this.Name = name;
-        this.ProjectDirPath = projectPath;
-        this._maxIndex = 0;
+        Name = name;
+        ProjectDirPath = projectPath;
+        _maxIndex = 0;
 
         FileHelper.CreateDirectory(GetDirectoryPath());
 
@@ -29,9 +29,9 @@ public class Collection
     // New collection from version
     public Collection(string name, string projectPath, Version prev)
     {
-        this.Name = name;
-        this.ProjectDirPath = projectPath;
-        this._maxIndex = 0;
+        Name = name;
+        ProjectDirPath = projectPath;
+        _maxIndex = 0;
 
         FileHelper.CreateDirectory(GetDirectoryPath());
 

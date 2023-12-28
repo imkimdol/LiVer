@@ -21,20 +21,20 @@ public class Version
     // New first version
     public Version(string collectionPath, string collectionName, string sourceFilePath)
     {
-        this.Id = 0;
-        this.CollectionDirPath = collectionPath;
-        this.CollectionName = collectionName;
-        this.Prev = null;
+        Id = 0;
+        CollectionDirPath = collectionPath;
+        CollectionName = collectionName;
+        Prev = null;
 
         FileHelper.CopyFile(sourceFilePath, GetFilePath());
     }
     // New version
     public Version(int id, string collectionPath, string collectionName, Version prev)
     {
-        this.Id = id;
-        this.CollectionDirPath = collectionPath;
-        this.CollectionName = collectionName;
-        this.Prev = prev;
+        Id = id;
+        CollectionDirPath = collectionPath;
+        CollectionName = collectionName;
+        Prev = prev;
 
         prev.Next.Add(this);
 
@@ -43,12 +43,12 @@ public class Version
     //  From VersionData
     private Version(SerializableVersion versionData, Version? prev, List<Version> next)
     {
-        this.Id = versionData.id;
-        this.CollectionDirPath = versionData.collectionPath;
-        this.Prev = prev;
-        this.Next = next;
-        this.ChangeLog = versionData.changeLog;
-        this.CommentsForNext = versionData.commentsForNext;
+        Id = versionData.id;
+        CollectionDirPath = versionData.collectionPath;
+        Prev = prev;
+        Next = next;
+        ChangeLog = versionData.changeLog;
+        CommentsForNext = versionData.commentsForNext;
 
         if (!CheckFile()) throw new Exception("Version file does not exist");
         CheckRender();
@@ -98,7 +98,7 @@ public class Version
         if (deserialized == null) { throw new Exception("Invalid Version data"); }
 
         int? prevId = deserialized!.prevId;
-        Version? prev = (prevId != null) ? collection.FindVersion((int) prevId) : null;
+        Version? prev = prevId != null ? collection.FindVersion((int)prevId) : null;
 
         List<Version> versions = new List<Version>();
         foreach (int id in deserialized.nextIds)
@@ -111,10 +111,10 @@ public class Version
     }
     private SerializableVersion ConvertToSerializable()
     {
-        int? prevId = (Prev != null) ? Prev.Id : null;
+        int? prevId = Prev != null ? Prev.Id : null;
         int[] nextIds = Next.ConvertAll(n => n.Id).ToArray();
         return new SerializableVersion(Id, CollectionDirPath, CollectionName, prevId, nextIds, ChangeLog, CommentsForNext);
-    } 
+    }
 }
 
 public class SerializableVersion

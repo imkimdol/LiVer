@@ -26,7 +26,7 @@ public static class FileHelper
     {
         File.WriteAllText(path, content);
     }
-    public static void DeleteFile (string path)
+    public static void DeleteFile(string path)
     {
         File.Delete(path);
     }

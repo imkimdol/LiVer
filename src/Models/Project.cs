@@ -22,7 +22,7 @@ public class Project
         FileHelper.CreateDirectory(DirectoryPath);
 
         NewCollection(liveSetPath);
-        
+
         SaveProjectFile();
     }
     // From ProjectData
@@ -36,7 +36,7 @@ public class Project
             {
                 _collections.Add(Collection.Deserialize(sc));
             }
-            catch {}
+            catch { }
         }
     }
 
@@ -108,7 +108,7 @@ public class SerializableProject
     public SerializableProject(string name, string dirpath, string[] serializedCollections)
     {
         this.name = name;
-        this.dirPath = dirpath;
+        dirPath = dirpath;
         this.serializedCollections = serializedCollections;
     }
 }
