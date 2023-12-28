@@ -28,9 +28,9 @@ public class Project
     // From ProjectData
     private Project(SerializableProject projectData)
     {
-        Name = projectData.name;
-        DirectoryPath = projectData.dirPath;
-        foreach (string sc in projectData.serializedCollections)
+        Name = projectData.Name;
+        DirectoryPath = projectData.DirectoryPath;
+        foreach (string sc in projectData.SerializedCollections)
         {
             try
             {
@@ -103,14 +103,14 @@ public class Project
 
 public class SerializableProject
 {
-    public string name { get; set; }
-    public string dirPath { get; set; }
-    public string[] serializedCollections { get; set; }
+    public string Name { get; set; }
+    public string DirectoryPath { get; set; }
+    public string[] SerializedCollections { get; set; }
 
     public SerializableProject(string name, string dirpath, string[] serializedCollections)
     {
-        this.name = name;
-        dirPath = dirpath;
-        this.serializedCollections = serializedCollections;
+        this.Name = name;
+        DirectoryPath = dirpath;
+        this.SerializedCollections = serializedCollections;
     }
 }

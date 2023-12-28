@@ -40,11 +40,11 @@ public class Collection
     // From CollectionData
     private Collection(SerializableCollection collectionData)
     {
-        Name = collectionData.name;
-        ProjectDirPath = collectionData.projectPath;
-        _maxIndex = collectionData.maxIndex;
+        Name = collectionData.Name;
+        ProjectDirPath = collectionData.ProjectPath;
+        _maxIndex = collectionData.MaxIndex;
 
-        foreach (string sv in collectionData.serializedVersions)
+        foreach (string sv in collectionData.SerializedVersions)
         {
             try
             {
@@ -112,16 +112,16 @@ public class Collection
 
 public class SerializableCollection
 {
-    public string name { get; set; }
-    public string projectPath { get; set; }
-    public int maxIndex { get; set; }
-    public string[] serializedVersions { get; set; }
+    public string Name { get; set; }
+    public string ProjectPath { get; set; }
+    public int MaxIndex { get; set; }
+    public string[] SerializedVersions { get; set; }
 
     public SerializableCollection(string name, string projectPath, int maxIndex, string[] serializedVersions)
     {
-        this.name = name;
-        this.projectPath = projectPath;
-        this.maxIndex = maxIndex;
-        this.serializedVersions = serializedVersions;
+        this.Name = name;
+        this.ProjectPath = projectPath;
+        this.MaxIndex = maxIndex;
+        this.SerializedVersions = serializedVersions;
     }
 }
