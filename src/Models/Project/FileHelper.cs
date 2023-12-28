@@ -12,82 +12,34 @@ public static class FileHelper
 
     public static void CreateDirectory(string path)
     {
-        try
-        {
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        }
-        catch (Exception e)
-        {
-            // TODO display error message
-        }
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
     }
     public static void DeleteDirectory(string path)
     {
-        try
-        {
-            if (Directory.Exists(path)) Directory.Delete(path, true);
-        }
-        catch (Exception e)
-        {
-            // TODO display error message
-        }
+        if (Directory.Exists(path)) Directory.Delete(path, true);
     }
     public static string ReadFile(string path)
     {
-        try
-        {
-            return File.ReadAllText(path);
-        }
-        catch (Exception e)
-        {
-            // TODO display error message
-            return string.Empty;
-        }
+        return File.ReadAllText(path);
     }
     public static void WriteFile(string path, string content)
     {
-        try
-        {
-            File.WriteAllText(path, content);
-        }
-        catch (Exception e)
-        {
-            // TODO display error message
-        }
+        File.WriteAllText(path, content);
     }
     public static void DeleteFile (string path)
     {
-        try
-        {
-            File.Delete(path);
-        }
-        catch (Exception e)
-        {
-            // TODO display error message
-        }
+        File.Delete(path);
     }
     public static void CopyFile(string source, string destination)
     {
-        try
-        {
-            File.Copy(source, destination, true);
-        }
-        catch (Exception e)
-        {
-            // TODO display error message
-        }
+        File.Copy(source, destination, true);
     }
     public static void OpenFile(string path)
     {
-        try
-        {
-            Process.Start(path);
-        }
-        catch (Exception e)
-        {
-            // TODO display error message
-        }
-
+        ProcessStartInfo psi = new ProcessStartInfo();
+        psi.FileName = path;
+        psi.UseShellExecute = true;
+        Process.Start(psi);
     }
     public static bool CheckFileExists(string path)
     {

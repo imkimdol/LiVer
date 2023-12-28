@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 
 namespace LiVer;
@@ -7,30 +8,35 @@ public class Version
 {
     public int Id { get; set; }
     public string CollectionDirPath { get; private set; }
+    public string CollectionName { get; private set; }
     public bool RenderExists { get; private set; } = false;
     public Version? Prev { get; private set; }
     public List<Version> Next { get; set; } = new List<Version>();
     public ReadOnlyCollection<Version> NextReadOnly => Next.AsReadOnly();
     public string ChangeLog { get; set; } = string.Empty;
-    public string CommendsForNext { get; set; } = string.Empty;
+    public string CommentsForNext { get; set; } = string.Empty;
 
-    
+
     // ** CONSTRUCTORS **
     // New first version
-    public Version(string collectionPath, string sourceFilePath)
+    public Version(string collectionPath, string collectionName, string sourceFilePath)
     {
         this.Id = 0;
         this.CollectionDirPath = collectionPath;
+        this.CollectionName = collectionName;
         this.Prev = null;
 
         FileHelper.CopyFile(sourceFilePath, GetFilePath());
     }
     // New version
-    public Version(int id, string collectionPath, Version prev)
+    public Version(int id, string collectionPath, string collectionName, Version prev)
     {
         this.Id = id;
         this.CollectionDirPath = collectionPath;
+        this.CollectionName = collectionName;
         this.Prev = prev;
+
+        prev.Next.Add(this);
 
         FileHelper.CopyFile(prev.GetFilePath(), GetFilePath());
     }
@@ -42,7 +48,7 @@ public class Version
         this.Prev = prev;
         this.Next = next;
         this.ChangeLog = versionData.changeLog;
-        this.CommendsForNext = versionData.commentsForNext;
+        this.CommentsForNext = versionData.commentsForNext;
 
         if (!CheckFile()) throw new Exception("Version file does not exist");
         CheckRender();
@@ -52,7 +58,7 @@ public class Version
     // ** FILE & RENDER **
     public string GetFilePath()
     {
-        return Path.Join(CollectionDirPath, Id.ToString(), FileHelper.AbletonLiveSetExtension);
+        return Path.Join(CollectionDirPath, Id.ToString() + FileHelper.AbletonLiveSetExtension);
     }
     private bool CheckFile()
     {
@@ -68,7 +74,7 @@ public class Version
     }
     public string GetRenderPath()
     {
-        return Path.Join(CollectionDirPath, Id.ToString(), FileHelper.WaveFileExtension);
+        return Path.Join(CollectionDirPath, Id.ToString() + FileHelper.WaveFileExtension);
     }
     public bool CheckRender()
     {
@@ -107,23 +113,25 @@ public class Version
     {
         int? prevId = (Prev != null) ? Prev.Id : null;
         int[] nextIds = Next.ConvertAll(n => n.Id).ToArray();
-        return new SerializableVersion(Id, CollectionDirPath, prevId, nextIds, ChangeLog, CommendsForNext);
+        return new SerializableVersion(Id, CollectionDirPath, CollectionName, prevId, nextIds, ChangeLog, CommentsForNext);
     } 
 }
 
 public class SerializableVersion
 {
-    public int id;
-    public string collectionPath;
-    public int? prevId;
-    public int[] nextIds;
-    public string changeLog;
-    public string commentsForNext;
+    public int id { get; set; }
+    public string collectionPath { get; set; }
+    public string collectionName { get; set; }
+    public int? prevId { get; set; }
+    public int[] nextIds { get; set; }
+    public string changeLog { get; set; }
+    public string commentsForNext { get; set; }
 
-    public SerializableVersion(int id, string collectionPath, int? prevId, int[] nextIds, string changeLog, string commentsForNext)
+    public SerializableVersion(int id, string collectionPath, string collectionName, int? prevId, int[] nextIds, string changeLog, string commentsForNext)
     {
         this.id = id;
         this.collectionPath = collectionPath;
+        this.collectionName = collectionName;
         this.prevId = prevId;
         this.nextIds = nextIds;
         this.changeLog = changeLog;

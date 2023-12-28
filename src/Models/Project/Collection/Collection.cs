@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 
 namespace LiVer;
@@ -7,21 +8,34 @@ public class Collection
 {
     public string Name { get; private set; }
     public string ProjectDirPath { get; private set; }
-    private int MaxIndex { get; set; }
-    private List<Version> _versions { get; } = new List<Version>();
+    private int _maxIndex { get; set; }
+    private List<Version> _versions { get; set; } = new List<Version>();
     public ReadOnlyCollection<Version> VersionsReadOnly => _versions.AsReadOnly();
 
     // ** CONSTRUCTORS **
+    
     // New collection
     public Collection(string name, string projectPath, string sourceFilePath)
     {
         this.Name = name;
         this.ProjectDirPath = projectPath;
-        this.MaxIndex = 0;
+        this._maxIndex = 0;
 
         FileHelper.CreateDirectory(GetDirectoryPath());
 
-        Version version = new Version(GetDirectoryPath(), sourceFilePath);
+        Version version = new Version(GetDirectoryPath(), Name, sourceFilePath);
+        _versions.Add(version);
+    }
+    // New collection from version
+    public Collection(string name, string projectPath, Version prev)
+    {
+        this.Name = name;
+        this.ProjectDirPath = projectPath;
+        this._maxIndex = 0;
+
+        FileHelper.CreateDirectory(GetDirectoryPath());
+
+        Version version = new Version(0, GetDirectoryPath(), Name, prev);
         _versions.Add(version);
     }
     // From CollectionData
@@ -29,7 +43,7 @@ public class Collection
     {
         Name = collectionData.name;
         ProjectDirPath = collectionData.projectPath;
-        MaxIndex = collectionData.maxIndex;
+        _maxIndex = collectionData.maxIndex;
 
         foreach (string sv in collectionData.serializedVersions)
         {
@@ -45,9 +59,9 @@ public class Collection
     // ** VERSION **
     public Version NewVersion(Version source)
     {
-        Version version = new Version(MaxIndex + 1, GetDirectoryPath(), source);
+        Version version = new Version(_maxIndex + 1, GetDirectoryPath(), Name, source);
         _versions.Add(version);
-        MaxIndex++;
+        _maxIndex++;
 
         return version;
     }
@@ -59,11 +73,6 @@ public class Collection
     public Version? FindVersion(int id)
     {
         return _versions.Find(v => v.Id == id);
-        /*foreach (Version v in versions)
-        {
-            if (v.id == id) return v;
-        }
-        return null;*/
     }
 
 
@@ -74,7 +83,7 @@ public class Collection
     }
     public void DeleteDirectory()
     {
-        FileHelper.DeleteDirectory(ProjectDirPath);
+        FileHelper.DeleteDirectory(GetDirectoryPath());
     }
 
 
@@ -97,17 +106,17 @@ public class Collection
         {
             serializedVersions.Add(v.Serialize());
         }
-        return new SerializableCollection(Name, ProjectDirPath, MaxIndex, serializedVersions.ToArray());
+        return new SerializableCollection(Name, ProjectDirPath, _maxIndex, serializedVersions.ToArray());
     }
 }
 
 public class SerializableCollection
 {
-    public string name;
-    public string projectPath;
-    public int maxIndex;
-    public string[] serializedVersions;
-    
+    public string name { get; set; }
+    public string projectPath { get; set; }
+    public int maxIndex { get; set; }
+    public string[] serializedVersions { get; set; }
+
     public SerializableCollection(string name, string projectPath, int maxIndex, string[] serializedVersions)
     {
         this.name = name;

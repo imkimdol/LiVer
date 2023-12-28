@@ -8,7 +8,7 @@ public class Project
     public string Name { get; set; }
     public string DirectoryPath { get; private set; }
     private List<Collection> _collections { get; } = new List<Collection>();
-    public ReadOnlyCollection<Collection> collectionReadOnly => _collections.AsReadOnly();
+    public ReadOnlyCollection<Collection> CollectionsReadOnly => _collections.AsReadOnly();
 
     // ** CONSTRUCTORS **
     // New collection
@@ -17,8 +17,11 @@ public class Project
         if (!Path.GetExtension(liveSetPath).Equals(FileHelper.AbletonLiveSetExtension)) throw new Exception();
         Name = Path.GetFileNameWithoutExtension(liveSetPath);
 
-        DirectoryPath = Path.Combine(liveSetPath, FileHelper.ProjectDirectoryName);
+        string liveSetDirectory = Path.GetDirectoryName(liveSetPath);
+        DirectoryPath = Path.Combine(liveSetDirectory, FileHelper.ProjectDirectoryName);
         FileHelper.CreateDirectory(DirectoryPath);
+
+        NewCollection(liveSetPath);
         
         SaveProjectFile();
     }
@@ -39,9 +42,15 @@ public class Project
 
 
     // ** COLLECTION **
+    public Collection NewCollection(string sourcePath)
+    {
+        Collection collection = new Collection("Untitled", DirectoryPath, sourcePath);
+        _collections.Add(collection);
+        return collection;
+    }
     public Collection NewCollection(string collectionName, Version source)
     {
-        Collection collection = new Collection(collectionName, DirectoryPath, source.GetFilePath());
+        Collection collection = new Collection(collectionName, DirectoryPath, source);
         _collections.Add(collection);
         return collection;
     }
@@ -63,7 +72,7 @@ public class Project
     }
     private string GetProjectFilePath()
     {
-        return Path.Combine(DirectoryPath, Name, FileHelper.ProjectFileExtension);
+        return Path.Combine(DirectoryPath, Name + FileHelper.ProjectFileExtension);
     }
 
 
@@ -92,9 +101,9 @@ public class Project
 
 public class SerializableProject
 {
-    public string name;
-    public string dirPath;
-    public string[] serializedCollections;
+    public string name { get; set; }
+    public string dirPath { get; set; }
+    public string[] serializedCollections { get; set; }
 
     public SerializableProject(string name, string dirpath, string[] serializedCollections)
     {
