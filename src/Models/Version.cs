@@ -44,6 +44,7 @@ public class Version
     {
         Id = versionData.id;
         CollectionDirPath = versionData.collectionPath;
+        CollectionName = versionData.collectionName;
         Prev = prev;
         Next = next;
         ChangeLog = versionData.changeLog;
