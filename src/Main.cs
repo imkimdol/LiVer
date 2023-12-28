@@ -3,6 +3,7 @@ internal class LiVer
 {
     static void Main(string[] args)
     {
-        UserInterface userInterface = new();
+        UserInterface ui = new MainInterface();
+        ui.Run();
     }
 }
