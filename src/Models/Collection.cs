@@ -12,8 +12,7 @@ public class Collection
     private List<Version> _versions { get; set; } = new List<Version>();
     public ReadOnlyCollection<Version> VersionsReadOnly => _versions.AsReadOnly();
 
-    // ** CONSTRUCTORS **
-
+    #region Constructors
     // New collection
     public Collection(string name, string projectPath, string sourceFilePath)
     {
@@ -54,9 +53,9 @@ public class Collection
             catch { }
         }
     }
+    #endregion
 
-
-    // ** VERSION **
+    #region Version
     public Version NewVersion(Version source)
     {
         Version version = new Version(_maxIndex + 1, GetDirectoryPath(), Name, source);
@@ -74,9 +73,9 @@ public class Collection
     {
         return _versions.Find(v => v.Id == id);
     }
+    #endregion
 
-
-    // ** FILE **
+    #region File
     private string GetDirectoryPath()
     {
         return Path.Combine(ProjectDirPath, Name);
@@ -85,9 +84,9 @@ public class Collection
     {
         FileHelper.DeleteDirectory(GetDirectoryPath());
     }
+    #endregion
 
-
-    // ** DATA **
+    #region Data
     public string Serialize()
     {
         SerializableCollection data = ConvertToSerializable();
@@ -108,6 +107,7 @@ public class Collection
         }
         return new SerializableCollection(Name, ProjectDirPath, _maxIndex, serializedVersions.ToArray());
     }
+    #endregion
 }
 
 public class SerializableCollection

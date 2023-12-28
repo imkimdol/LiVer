@@ -10,7 +10,7 @@ public class Project
     private List<Collection> _collections { get; } = new List<Collection>();
     public ReadOnlyCollection<Collection> CollectionsReadOnly => _collections.AsReadOnly();
 
-    // ** CONSTRUCTORS **
+    #region Constructors
     // New collection
     public Project(string liveSetPath)
     {
@@ -39,9 +39,9 @@ public class Project
             catch { }
         }
     }
+    #endregion
 
-
-    // ** COLLECTION **
+    #region Collection
     public Collection NewCollection(string sourcePath)
     {
         Collection collection = new Collection("Untitled", DirectoryPath, sourcePath);
@@ -59,8 +59,9 @@ public class Project
         collection.DeleteDirectory();
         _collections.Remove(collection);
     }
+    #endregion
 
-    // ** FILE **
+    #region File
     public static Project LoadProject(string projectFilePath)
     {
         string serializedData = FileHelper.ReadFile(projectFilePath);
@@ -74,9 +75,9 @@ public class Project
     {
         return Path.Combine(DirectoryPath, Name + FileHelper.ProjectFileExtension);
     }
+    #endregion
 
-
-    // ** DATA **
+    #region Data
     private string Serialize()
     {
         SerializableProject data = ConvertToSerializable();
@@ -97,6 +98,7 @@ public class Project
         }
         return new SerializableProject(Name, DirectoryPath, serializedCollections.ToArray());
     }
+    #endregion
 }
 
 public class SerializableProject

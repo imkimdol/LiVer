@@ -16,8 +16,7 @@ public class Version
     public string ChangeLog { get; set; } = string.Empty;
     public string CommentsForNext { get; set; } = string.Empty;
 
-
-    // ** CONSTRUCTORS **
+    #region Constructors
     // New first version
     public Version(string collectionPath, string collectionName, string sourceFilePath)
     {
@@ -53,9 +52,9 @@ public class Version
         if (!CheckFile()) throw new Exception("Version file does not exist");
         CheckRender();
     }
+    #endregion
 
-
-    // ** FILE & RENDER **
+    #region File & Render
     public string GetFilePath()
     {
         return Path.Join(CollectionDirPath, Id.ToString() + FileHelper.AbletonLiveSetExtension);
@@ -84,9 +83,9 @@ public class Version
     {
         FileHelper.OpenFile(GetRenderPath());
     }
+    #endregion
 
-
-    // ** DATA **
+    #region Data
     public string Serialize()
     {
         SerializableVersion data = ConvertToSerializable();
@@ -115,6 +114,7 @@ public class Version
         int[] nextIds = Next.ConvertAll(n => n.Id).ToArray();
         return new SerializableVersion(Id, CollectionDirPath, CollectionName, prevId, nextIds, ChangeLog, CommentsForNext);
     }
+    #endregion
 }
 
 public class SerializableVersion
