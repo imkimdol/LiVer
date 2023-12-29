@@ -71,7 +71,7 @@ public class Project
     {
         FileHelper.WriteFile(GetProjectFilePath(), Serialize());
     }
-    private string GetProjectFilePath()
+    public string GetProjectFilePath()
     {
         return Path.Combine(DirectoryPath, Name + FileHelper.ProjectFileExtension);
     }
@@ -107,10 +107,10 @@ public class SerializableProject
     public string DirectoryPath { get; set; }
     public string[] SerializedCollections { get; set; }
 
-    public SerializableProject(string name, string dirpath, string[] serializedCollections)
+    public SerializableProject(string name, string dirPath, string[] serializedCollections)
     {
-        this.Name = name;
-        DirectoryPath = dirpath;
-        this.SerializedCollections = serializedCollections;
+        Name = name;
+        DirectoryPath = dirPath;
+        SerializedCollections = serializedCollections;
     }
 }
