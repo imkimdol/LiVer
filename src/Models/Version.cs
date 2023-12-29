@@ -42,13 +42,13 @@ public class Version
     //  From VersionData
     private Version(SerializableVersion versionData, Version? prev, List<Version> next)
     {
-        Id = versionData.Id;
-        CollectionDirPath = versionData.CollectionPath;
-        CollectionName = versionData.CollectionName;
+        Id = versionData.id;
+        CollectionDirPath = versionData.collectionPath;
+        CollectionName = versionData.collectionName;
         Prev = prev;
         Next = next;
-        ChangeLog = versionData.ChangeLog;
-        CommentsForNext = versionData.CommentsForNext;
+        ChangeLog = versionData.changeLog;
+        CommentsForNext = versionData.commentsForNext;
 
         if (!CheckFile()) throw new Exception("Version file does not exist");
         CheckRender();
@@ -97,11 +97,11 @@ public class Version
         SerializableVersion? deserialized = JsonSerializer.Deserialize<SerializableVersion>(data);
         if (deserialized == null) { throw new Exception("Invalid Version data"); }
 
-        int? prevId = deserialized!.PrevId;
+        int? prevId = deserialized!.prevId;
         Version? prev = prevId != null ? collection.FindVersion((int)prevId) : null;
 
         List<Version> versions = new List<Version>();
-        foreach (int id in deserialized.NextIds)
+        foreach (int id in deserialized.nextIds)
         {
             Version? version = collection.FindVersion(id);
             if (version != null) versions.Add(version);
@@ -120,22 +120,22 @@ public class Version
 
 public class SerializableVersion
 {
-    public int Id { get; set; }
-    public string CollectionPath { get; set; }
-    public string CollectionName { get; set; }
-    public int? PrevId { get; set; }
-    public int[] NextIds { get; set; }
-    public string ChangeLog { get; set; }
-    public string CommentsForNext { get; set; }
+    public int id { get; set; }
+    public string collectionPath { get; set; }
+    public string collectionName { get; set; }
+    public int? prevId { get; set; }
+    public int[] nextIds { get; set; }
+    public string changeLog { get; set; }
+    public string commentsForNext { get; set; }
 
     public SerializableVersion(int id, string collectionPath, string collectionName, int? prevId, int[] nextIds, string changeLog, string commentsForNext)
     {
-        this.Id = id;
-        this.CollectionPath = collectionPath;
-        this.CollectionName = collectionName;
-        this.PrevId = prevId;
-        this.NextIds = nextIds;
-        this.ChangeLog = changeLog;
-        this.CommentsForNext = commentsForNext;
+        this.id = id;
+        this.collectionPath = collectionPath;
+        this.collectionName = collectionName;
+        this.prevId = prevId;
+        this.nextIds = nextIds;
+        this.changeLog = changeLog;
+        this.commentsForNext = commentsForNext;
     }
 }
